@@ -13,6 +13,15 @@ public class TextViewLayoutConverter extends LayoutConverter {
     private Object drawableRelative[] = new Object[]{null, null};//start,end
 
     @Override
+    public LayoutAttribute onConvertLayoutAttributeValue(String attributeValue, String attributeName) {
+        switch(attributeName) {
+            case "android:ellipsize":
+                return super.onConvertLayoutAttribute(attributeValue, "android.text.TextUtils.TruncateAt."+attributeValue.toUpperCase(), attributeName, false);
+        }
+        return super.onConvertLayoutAttributeValue(attributeValue, attributeName);
+    }
+
+    @Override
     public LayoutAttribute onConvertLayoutAttribute(String attributeStartValue, String attributeValue, String attributeName, boolean isString) {
         switch (attributeName) {
             case "android:drawablePadding":
@@ -39,6 +48,18 @@ public class TextViewLayoutConverter extends LayoutConverter {
             case "android:drawableEnd":
                 drawableRelative = new Object[]{drawableRelative[0] != null ? drawableRelative[0] : drawable[0], drawable[1], attributeValue, drawable[3]};
                 return new LayoutAttribute();
+            case "android:maxLength":
+                //setFilters(new InputFilter[] { new InputFilter.LengthFilter(maxlength) });
+                String value = String.format("new android.text.InputFilter[] { new android.text.InputFilter.LengthFilter(%s) }", attributeValue);
+                return new LayoutAttribute(setter("Filters", value, false));
+            case "android:textAllCaps":
+                return new LayoutAttribute(setter("AllCaps", attributeValue, false));
+            case "android:textColorHint":
+                return new LayoutAttribute(setter("HintTextColor", attributeValue, false));
+            case "android:textColorLink":
+                return new LayoutAttribute(setter("LinkTextColor", attributeValue, false));
+            case "android:textColorHighlight":
+                return new LayoutAttribute(setter("HighlightColor", attributeValue, false));
         }
         return null;
     }
@@ -47,10 +68,10 @@ public class TextViewLayoutConverter extends LayoutConverter {
     public List<LayoutAttribute> onFinish() {
         List<LayoutAttribute> finished = new ArrayList<>();
         if (drawable[0] != null || drawable[1] != null || drawable[2] != null || drawable[3] != null) {
-            finished.add(new LayoutAttribute("setCompoundDrawables(" + drawable[0] + "," + drawable[1] + "," + drawable[2] + "," + drawable[3] + ")"));
+            finished.add(new LayoutAttribute(setter("CompoundDrawables", drawable[0] + "," + drawable[1] + "," + drawable[2] + "," + drawable[3], false)));
         }
         if (drawableRelative[0] != null || drawableRelative[1] != null) {
-            finished.add(new LayoutAttribute("setCompoundDrawablesRelative(" + drawableRelative[0] + "," + drawable[1] + "," + drawable[2] + "," + drawableRelative[3] + ")"));
+            finished.add(new LayoutAttribute(setter("CompoundDrawablesRelative", drawableRelative[0] + "," + drawable[1] + "," + drawable[2] + "," + drawableRelative[3], false)));
         }
         return finished;
     }

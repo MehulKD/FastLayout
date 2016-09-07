@@ -3,7 +3,7 @@
 
 <a href="http://www.methodscount.com/?lib=io.fabianterhorst%3Afastlayout%3A%2B"><img src="https://img.shields.io/badge/Methods and size-12 | 4 KB-e91e63.svg"></img></a>
 
-####The project methodcount is very low, because everythink happen on compile time.
+####This projects methodcount is very low, because everything happens on compile time.
 
 ###Add the dependencies
 main build.gradle
@@ -14,7 +14,7 @@ buildscript {
     }
     dependencies {
         ...
-		classpath 'io.fabianterhorst:fastlayout-gradle-plugin:0.0.2-alpha23'
+		classpath 'io.fabianterhorst:fastlayout-gradle-plugin:0.0.2-alpha37'
 		...
 	}
 }
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         //when you don´t wanna use the cache you can also just initiate the object
         //setContentView(new ActivityMainLayout(this));
         //The cache is reusing the object to improve the performance
-        ActivityMainLayout layout = LayoutCache.getInstance(this).getLayout(LayoutCache.Activity_Main_Layout);
+        ActivityMainLayout layout = LayoutCache.getInstance().getLayout(context, LayoutCache.Activity_Main_Layout);
         setContentView(layout);
     }
 }

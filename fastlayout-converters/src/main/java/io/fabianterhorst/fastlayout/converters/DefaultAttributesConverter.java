@@ -6,8 +6,9 @@ import io.fabianterhorst.fastlayout.annotations.Converter;
  * Created by fabianterhorst on 18.05.16.
  */
 @Converter
+//Todo : split into ViewLayoutConverter and ViewGroupLayoutConverter
 public class DefaultAttributesConverter extends LayoutConverter {
-
+    //Todo : remove View., because the root layout always extends view
     @Override
     public LayoutAttribute onConvertLayoutAttributeValue(String attributeValue, String attributeName) {
         switch (attributeName) {
@@ -30,6 +31,10 @@ public class DefaultAttributesConverter extends LayoutConverter {
                 return super.onConvertLayoutAttribute(attributeValue, "View.IMPORTANT_FOR_ACCESSIBILITY_" + stringToConstant(attributeValue).toUpperCase(), attributeName, false);
             case "android:visibility":
                 return super.onConvertLayoutAttribute(attributeValue, "View." + attributeValue.toUpperCase(), attributeName, false);
+            case "android:textAlignment":
+                return super.onConvertLayoutAttribute(attributeValue, "View.TEXT_ALIGNMENT_" + stringToConstant(attributeValue).toUpperCase(), attributeName, false);
+            case "android:textDirection":
+                return super.onConvertLayoutAttribute(attributeValue, "View.TEXT_DIRECTION_" + stringToConstant(attributeValue).toUpperCase(), attributeName, false);
         }
         return super.onConvertLayoutAttributeValue(attributeValue, attributeName);
     }
@@ -44,10 +49,11 @@ public class DefaultAttributesConverter extends LayoutConverter {
             case "android:layout_gravity":
                 return new LayoutAttribute(LayoutAttribute.Type.PARAM, attribute(attributeName.replace("android:layout_", ""), attributeValue));
             case "android:background":
-                if (String.valueOf(attributeStartValue).startsWith("R.") || String.valueOf(attributeStartValue).startsWith("android.R.")) {
+                if (String.valueOf(attributeStartValue).startsWith("R.drawable.") || String.valueOf(attributeStartValue).startsWith("android.R.drawable.")) {
                     return new LayoutAttribute(setter("BackgroundResource", attributeStartValue, false));
                 }
                 break;
+            //Todo : textView attribute
             case "android:textSize":
                 if (attributeStartValue.endsWith("sp")) {
                     return new LayoutAttribute(setter("TextSize", "TypedValue.COMPLEX_UNIT_SP," + attributeStartValue.replace("sp", ""), false));
